@@ -14,10 +14,10 @@
   },
   "devDependencies": {
     "nyc": "^11.7.1"
-  }
-}
-{
+  },
+
   "scripts": {
     "test": "nyc --reporter=text mocha"
   }
 }
+
