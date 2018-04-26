@@ -9,7 +9,7 @@ deployment:
   prod:
     branch: master
     heroku:
-      appname: DockCircle
+      appname: herokuappdeploy
 
 test:
   override:    
