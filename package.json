@@ -15,8 +15,9 @@
   "devDependencies": {
     "nyc": "^11.7.1"
   }
+}
+{
   "scripts": {
-    "test": "mocha",
-    "test-with-coverage": "nyc --reporter=text mocha"
+    "test": "nyc --reporter=text mocha"
   }
 }
