@@ -1,10 +1,15 @@
 
-
+#For Docker Hub
+#deployment:
+  #dockerhub:
+    #branch: master
+    #commands:
+      #- $docker_trigger
 deployment:
-  dockerhub:
+  prod:
     branch: master
-    commands:
-      - $docker_trigger
+    heroku:
+      appname: DockCircle
 
 test:
   override:    
