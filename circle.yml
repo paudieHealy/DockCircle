@@ -1,15 +1,16 @@
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - run-tests:
+          context: org-global
 
 #For Docker Hub
-#deployment:
-  #dockerhub:
-    #branch: master
-    #commands:
-      #- $docker_trigger
 deployment:
-  prod:
+  dockerhub:
     branch: master
-    heroku:
-      appname: herokuappdeploy
+    commands:
+      - $docker_trigger
 
 test:
   override:    
