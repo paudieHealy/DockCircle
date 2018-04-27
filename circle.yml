@@ -1,11 +1,3 @@
-#update yml file
-workflows:
-  version: 2
-  my-workflow:
-    jobs:
-      - run-tests:
-          context: org-global
-
 #For Docker Hub
 deployment:
   dockerhub:
@@ -17,10 +9,3 @@ test:
   override:    
     - mocha
 
-language:
-  node_js
-install:
-  -npm install -g codecov
-script:
-  - istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec
-  - codecov
