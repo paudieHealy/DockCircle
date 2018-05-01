@@ -1,3 +1,13 @@
+deployment:
+  dockerhub:
+    branch: master
+    commands:
+      - $docker_trigger
+
+test:
+  override:    
+    - mocha
+
 #For Docker Hub
 # PHP CircleCI 2.0 configuration file
 #
@@ -137,16 +147,6 @@ workflows:
       - phpunit-70
       - phpunit-71
       - code-fixer
-
-deployment:
-  dockerhub:
-    branch: master
-    commands:
-      - $docker_trigger
-
-test:
-  override:    
-    - mocha
 
 version: 2.0
 jobs:
