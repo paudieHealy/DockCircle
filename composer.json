@@ -1,0 +1,6 @@
+{
+	"require":{
+			"php composer.phar global update"
+	}
+
+}
