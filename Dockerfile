@@ -4,4 +4,4 @@ USER root
 
 RUN apt-get update && apt-get install nginx
 
-RUN git clone https://github.com/CircleCI-Public/circleci-dockerfiles/tree/master/node/images
+RUN git clone https://github.com/CircleCI-Public/circleci-dockerfiles/root/circle-dockerfiles
