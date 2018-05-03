@@ -1,12 +1,93 @@
-deployment:
-  dockerhub:
-    branch: master
-    commands:
-      - $docker_trigger
+version: 2
+jobs:
+  build:
+    environment:
+    working_directory: ~/circleci-myapp
+    docker:
+      - image: circleci/ruby:2.4.2-node-browsers
+        environment:
+          CC_TEST_REPORTER_ID: XXXYYY
+          RAILS_ENV: test
+          TEST_REPORT_PATH: "test/reports"
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: circleci
+    parallelism: 2
+    steps:
+      - checkout
 
-test:
-  override:    
-    - mocha
+      # Restore bundle cache
+      - type: cache-restore
+        key: myapp-bundle-{{ checksum "Gemfile.lock" }}
+
+      # Restore yarn cache
+      - type: cache-restore
+        key: myapp-yarn-{{ checksum "yarn.lock" }}
+
+      # Install gem dependencies
+      - run: bundle install --path vendor/bundle
+
+      # Install Javascript dependencies
+      - run: bin/yarn install
+
+      # Store bundle cache
+      - type: cache-save
+        key: myapp-bundle-{{ checksum "Gemfile.lock" }}
+        paths:
+          - vendor/bundle
+
+      # Store yarn cache
+      - type: cache-save
+        key: myapp-yarn-{{ checksum "yarn.lock" }}
+        paths:
+          - ~/.yarn-cache
+
+      # Database setup
+      - run: bin/rails db:create
+      - run: bin/rails db:schema:load
+
+      # Code Climate setup
+      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      - run: chmod +x ./cc-test-reporter
+      - run: sudo apt-get -y -qq install awscli
+      - run: aws s3 rm s3://myapp/coverage/$CIRCLE_PREVIOUS_BUILD_NUM --recursive
+
+      # Run Ruby unit tests and app integration tests in parallel
+      - type: shell
+        command: |
+          bin/rails test $(circleci tests glob "test/**/*_test.rb" | circleci tests split --split-by=timings)
+      # Run Javascript unit tests
+      - run: yarn test
+
+      # Code Climate coverage, split for parallel nodes
+      - run: ./cc-test-reporter format-coverage --output "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
+      - run: aws s3 sync coverage/ "s3://myapp/coverage/$CIRCLE_BUILD_NUM"
+
+      # Run security scan
+      - run: bundle exec brakeman
+
+      # Save artifacts
+      - type: store_test_results
+        path: test/reports
+
+      # `deploy` runs only on node 0 after parallel steps have finished
+      # Upload results from all parallel nodes to Code Climate
+      - deploy: 
+          command: |
+            aws s3 sync "s3://myapp/coverage/$CIRCLE_BUILD_NUM" coverage/ 
+            ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+
+
+
+#deployment:
+  #dockerhub:
+    #branch: master
+    #commands:
+      #- $docker_trigger
+
+#test:
+  #override:    
+    #- mocha
 
 #version: 2.0
 #jobs:
