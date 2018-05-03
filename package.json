@@ -1,11 +1,11 @@
 {
-  "name": "hello-pluralsighters",
+  "name": "Project Downloaded",
   "private": true,
   "version": "0.0.1",
-  "description": "Demo app for Pluralsight Docker CI course",
+  "description": "This project is used for demonstrations",
   "main": "app.js",
-  "author": "Nigel Poulton <nigelpoulton@hotmail.com>",
-  "license": "You'd have to be mad to use this in production :-D",
+  "author": "Nigel Poulton",
+  "license": "Testing application",
   "dependencies": {
     "express": "3.2.4",
     "jade": "1.11.0",
