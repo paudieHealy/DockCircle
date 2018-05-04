@@ -8,6 +8,22 @@ test:
   override:    
     - mocha
 
+machine:
+  environment:
+    CC_TEST_REPORTER_ID: 45a3ca32cc7512a05dd47b1449abfa5cf0753af686d9740477f59160f0e26f5d
+
+dependencies:
+  post:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+
+test:
+  pre:
+    - ./cc-test-reporter before-build
+
+  post:
+    - ./cc-test-reporter after-build --exit-code $EXIT_CODE
+
 #version: 2.0
 #jobs:
   #build:
