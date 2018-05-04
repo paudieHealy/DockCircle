@@ -12,6 +12,10 @@ describe('GET /', function(){
   });
 });
 
+function sum(a, b) {
+	return a + b;
+}
+
 const sum = require('./sum');
 
 test('adds 1 + 2 to equal 3', () => {
